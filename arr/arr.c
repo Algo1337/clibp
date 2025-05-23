@@ -15,7 +15,7 @@ arr_T *new_arr(const arr arr, int stack) {
 
     if(stack)
         a->location.stack = 1;
-    else 
+    else
         a->location.heap = 1;
 
 	if(arr)
@@ -24,7 +24,7 @@ arr_T *new_arr(const arr arr, int stack) {
     return a;
 }
 
-int arr_Contains(arr_T *a, const str q) {
+int arr_Contains(arr_T *a, element q) {
     if(!a || !q)
         return -1;
 
@@ -36,13 +36,76 @@ int arr_Contains(arr_T *a, const str q) {
     return -1;
 }
 
-int arr_Append(arr_T *a, const str q) {
+int arr_Append(arr_T *a, element q) {
     if(!a || !q)
-        return -1;
+        return 0;
 
     a->arr[a->idx] = q;
     a->idx++;
     a->arr = (arr)realloc(a->arr, sizeof(element) * (a->idx + 1));
 
     return 1;
+}
+
+int arr_Remove(arr_T *a, int pos, void *destructor) {
+	if(!a || pos < 0)
+		return 0;
+
+	void **arr = (void **)malloc(sizeof(void *) * 1);
+	int idx = 0;
+
+	for(int i = 0; i < a->idx; i++) {
+		if(!a->arr[i])
+			break;
+
+		if(i == pos) {
+			((void (*)(void *))destructor)(a->arr[i]);
+			continue;
+		}
+
+		arr[idx] = a->arr[i];
+		idx++;
+		arr = (void **)realloc(arr, sizeof(void *) * (idx + 1));
+	}
+
+	free(a->arr);
+	a->arr = arr;
+	a->idx = idx;
+	return 1;
+}
+
+int arr_Merge(arr_T *a, arr r) {
+	if(!a || !r)
+		return -1;
+
+	int added = 0;
+	for(int i = 0; r[i] != NULL; i++) {
+		if(arr_Append(a, r[i]))
+			added++;
+	}
+
+	return added;
+}
+
+void arr_Destruct(arr_T *a, void *destructor) {
+    if(!a)
+        return;
+
+    if(a->arr) {
+        for(int i = 0; i < a->idx; i++) {
+            if(!a->arr[i])
+                break;
+
+			if(destructor)
+				((void *(*)(void *))destructor)(a->arr[i]);
+			else
+            	free(a->arr[i]);
+
+            a->arr[i] = NULL;
+        }
+
+        free(a->arr);
+    }
+
+    free(a);
 }
