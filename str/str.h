@@ -24,6 +24,8 @@ str_T   *new_str(const str data, int stack);
 str_T   *str_Set(str_T *s);
 str     str_Get(str_T *s);
 size_t  str_Len(str_T *s);
+int		str_Append(str_T *s, str_T *n);
+int		str_Remove(str_T *s, int start, int end);
 int     str_IsASCII(str_T *s);
 int     str_Is(str_T *s, const str q);
 int     str_Contains(str_T *s, const str q);

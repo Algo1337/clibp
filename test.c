@@ -43,11 +43,11 @@ json_t DecodeJSON(const str_T *rjson) {
 	json_t json 	= new_json();
 	arr_t lines 	= str_SplitAt((str_t)rjson, ',');
 
-	arr_t path 		= new_arr(NULL, 0);
+	str_t path 		= new_str(strdup("/"), 0);
+	str_t current 	= new_str(NULL, 0);
 	int arrs 		= 0;
 	int subs 		= 0;
 
-	arr_Append(path, new_str(strdup("/"), 0));
 	for(int i = 0; i < lines->idx; i++) {
 		if(!lines->arr[i])
 			break;
@@ -55,45 +55,68 @@ json_t DecodeJSON(const str_T *rjson) {
 		str_t rfield = lines->arr[i];
 		arr_t args = str_SplitAt(rfield, ':');
 
-		if(args->idx != 2)
+		if(args->idx < 2)
 			continue;
 
-		str_Trim(args->arr[0], '"');
-		if(str_StartsWith(args->arr[1], "{")) {
-			arr_Append(path, args->arr[0]);
+		str_t key = args->arr[0];
+		str_t value = args->arr[1];
 
-			int start = str_FindChar((str_t)args->arr[1], '{', 0);
-			str_TrimAt(args->arr[1], start);
-
-			subs++;
-			str_Trim(args->arr[1], '"');
-			str_Trim(args->arr[2], '"');
-			json_Append(json, (str_t)path->arr[path->idx - 1], (str_t)args->arr[1], new_str(strdup(((str_t)args->arr[2])->data), 0));
+		if(key->data[0] == '"' && key->data[key->idx - 1] == '"') {
+			str_TrimAt(key, 0);
+			str_TrimAt(key, key->idx - 1);
 		}
 
-		if(str_EndsWith(args->arr[1], "}")) {
-			arr_Remove(path, path->idx - 1, str_Destruct);
-			str_Trim((str_t)args->arr[1], '}');
-			if(i == lines->idx - 1)
-				break;
+		if(value->data[0] == '"' && value->data[value->idx - 1] == '"') {
+			str_TrimAt(value, 0);
+			str_TrimAt(value, value->idx - 1);
+		}
+
+		if(((str_t)args->arr[1])->data[0] == '{') {
+			str_Append(path, args->arr[0]);
+			str_Append(current, args->arr[0]);
+
+			subs++;
+			if(!str_Trim(args->arr[1], '"'))
+				printf("FAILED\n");
+
+			str_Trim(args->arr[1], '{');
+			str_Trim(args->arr[2], '"');
+
+			json_Append(json, path, args->arr[1], new_str(strdup(((str_t)args->arr[2])->data), 0));
+			continue;
+		}
+
+		if(value->data[value->idx] == '}' || strstr(value->data, "}")) {
+			if(str_Contains(value, "\"")) {
+				int max_quotes = str_CountChar(value, '"');
+				int start = str_FindChar(value, '"', 0), end = str_FindChar(value, '"', max_quotes - 1);
+				str_TrimAt(value, start);
+				str_TrimAt(value, end - 1);
+			}
+
+			str_TrimAt(value, value->idx - 1);
+
+			json_Append(json, path, key, new_str(strdup(value->data), 0));
+			str_Remove(path, path->idx - current->idx, path->idx);
+			continue;
 		}
 
 		if(str_StartsWith(args->arr[1], "[")) {
 			int start = str_FindChar((str_t)rjson, '[', arrs), end = str_FindChar((str_t)rjson, ']', arrs);
 			char *sub = str_GetSub((str_t)rjson, start + 1, end);
-			json_Append(json, (str_t)path->arr[path->idx - 1], (str_t)args->arr[0], new_str(sub, 0));
+			json_Append(json, path, (str_t)args->arr[0], new_str(sub, 0));
 			arrs++;
 			continue;
 		}
 
-		str_Trim(args->arr[1], '"');
-		json_Append(json, (str_t)path->arr[path->idx - 1], (str_t)args->arr[0], new_str(strdup(((str_t)args->arr[1])->data), 0));
+		str_Trim(value, '"');
+		json_Append(json, path, key, new_str(strdup(value->data), 0));
 
 		arr_Destruct(args, str_Destruct);
 	}
 
 	arr_Destruct(lines, str_Destruct);
-	arr_Destruct(path, str_Destruct);
+	str_Destruct(path);
 	return json;
 }
 
@@ -105,6 +128,11 @@ int main() {
 
 	json_t geo = DecodeJSON(new_str(txt, 0));
 	for(int i = 0; i < geo->fields->idx; i++) {
-		printf("%s => %s\n", ((jfield_t)geo->fields->arr[i])->key->data, ((jfield_t)geo->fields->arr[i])->value->data);
+		if(!strcmp(((jfield_t)geo->fields->arr[i])->path->data, "/")) {
+			printf("[%d] Path: %s | %s => %s\n", i, ((jfield_t)geo->fields->arr[i])->path->data, ((jfield_t)geo->fields->arr[i])->key->data, ((jfield_t)geo->fields->arr[i])->value->data);
+			continue;
+		}
+
+		printf("[%d] Path: %s | %s => %s\n", i, ((jfield_t)geo->fields->arr[i])->path->data, ((jfield_t)geo->fields->arr[i])->key->data, ((jfield_t)geo->fields->arr[i])->value->data);
 	}
 }

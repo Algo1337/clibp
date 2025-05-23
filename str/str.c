@@ -43,6 +43,41 @@ size_t str_Len(str_T *s) {
     return s->idx;
 }
 
+int str_Append(str_T *s, str_T *n) {
+	if(!s || !n)
+		return 0;
+
+	s->idx += n->idx;
+	s->data = (char *)realloc(s->data, s->idx);
+
+	strncat(s->data, n->data, n->idx);
+	return 1;
+}
+
+int str_Remove(str_T *s, int start, int end) {
+	if(!s)
+		return 0;
+
+	char *nstr = (char *)malloc(1);
+	int idx = 0;
+	for(int i = 0; i < s->idx; i++) {
+		if(i >= start || end < i)
+			continue;
+
+		nstr[idx] = s->data[i];
+		idx++;
+		nstr = (char *)realloc(nstr, idx + 1);
+	}
+
+	nstr[idx] = '\0';
+
+	free(s->data);
+	s->data = nstr;
+	s->idx = idx;
+
+	return 1;
+}
+
 int str_IsASCII(str_T *s) {
     if(!s || !s->data)
         return 0;
