@@ -115,8 +115,8 @@ json_t DecodeJSON(const str_T *rjson) {
 			}
 
 			str_TrimAt(value, value->idx - 1);
-
 			json_Append(json, path, key, new_str(strdup(value->data), 0), ctype);
+
 			str_Remove(path, path->idx - current->idx, path->idx);
 			continue;
 		}
@@ -130,6 +130,34 @@ json_t DecodeJSON(const str_T *rjson) {
 	arr_Destruct(lines, str_Destruct);
 	str_Destruct(path);
 	return json;
+}
+
+void json_Destruct(json_t m) {
+	if(!m)
+		return;
+
+	if(!m->fields->arr) {
+		for(int i = 0; i < m->fields->idx; i++) {
+			jfield_t field = m->fields->arr[i];
+
+			switch((int)field->type) {
+				case J_STRING:
+					str_Destruct(field->key);
+					str_Destruct(field->value);
+					break;
+				case J_INT:
+					free(field->value);
+					break;
+				case J_ARRAY:
+					arr_Destruct(field->value, str_Destruct);
+					break;
+				defualt:
+					printf("[ - ] Error, Unable to delete: %s from map\n", field->key->data);
+			}
+		}
+	}
+
+	free(m);
 }
 
 int main() {
@@ -158,5 +186,7 @@ int main() {
 			continue;
 		}
 	}
+
+	json_Destruct(geo);
 }
 
