@@ -3,10 +3,17 @@
 #include "../str/str.h"
 #include "../arr/arr.h"
 
+typedef enum JSON_TYPE {
+	J_STRING = 0x03543,
+	J_INT = 0x03544,
+	J_ARRAY = 0x03545
+} JSON_TYPE;
+
 typedef struct jfield_T {
     str_T       *path;
     str_T       *key;
-    str_T       *value;
+    void        *value;
+	JSON_TYPE	type;
 } jfield_T;
 
 typedef struct field_T {

@@ -8,6 +8,9 @@
 #include "arr/arr.h"
 #include "map/map.h"
 
+#define ____Inline____(return_type, function_body) \
+    ({ return_type __fn__ function_body __fn__; })
+
 #if defined(STRING_CLIBP)
 	typedef str_T *str_t;
 #endif
@@ -15,7 +18,7 @@
 #if defined(ARRAY_CLIBP)
 	typedef arr_T *arr_t;
 
-	arr_t str_SplitAt(str_T *s, const character ch);
+	arr_t str_SplitAt(str_t s, const character ch);
 #endif
 
 #if defined(MAP_CLIBP)
@@ -24,6 +27,7 @@
 #endif
 
 #if defined(JSON_CLIBP)
+	typedef JSON_TYPE json_types;
 	typedef map_T *json_t;
 	typedef jfield_T *jfield_t;
 #endif

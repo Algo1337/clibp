@@ -30,7 +30,20 @@ char *ReadFileContent(const char *filepath) {
     return NULL;
 }
 
-arr_T *str_SplitAt(str_T *s, const character ch) {
+/* Construct String Using Array */
+str_t arr_Join(arr_t a, str delim) {
+	if(!a)
+		return NULL;
+
+	str_t buff = new_str(NULL, 0);
+	for(int i = 0; i < a->idx; i++)
+		str_Append(buff, a->arr[i]);
+
+	return buff;
+}
+
+/* Split String Using Char */
+arr_t str_SplitAt(str_t s, const character ch) {
     if(!s || !s->data)
         return NULL;
 
