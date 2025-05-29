@@ -9,13 +9,6 @@ typedef enum JSON_TYPE {
 	J_ARRAY = 0x03545
 } JSON_TYPE;
 
-typedef struct jfield_T {
-    str_T       *path;
-    str_T       *key;
-    void        *value;
-	JSON_TYPE	type;
-} jfield_T;
-
 typedef struct field_T {
     str_T       *key;
     str_T       *value;

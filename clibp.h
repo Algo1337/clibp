@@ -26,10 +26,25 @@
 	typedef field_T *field_t;
 #endif
 
-#if defined(JSON_CLIBP)
+#if __has_include("map/map.h") && defined(JSON_CLIBP)
+	typedef struct jfield_T {
+		str_T       *path;
+		str_T       *key;
+		void        *value;
+		JSON_TYPE	type;
+	} jfield_T;
+
 	typedef JSON_TYPE json_types;
 	typedef map_T *json_t;
 	typedef jfield_T *jfield_t;
+	
+	json_t new_json(void);
+	int json_Append(json_t j, str_t path, str_t key, element e, json_types type);
+	json_t DecodeJSON(const str_T *rjson);
+	void jfield_Destruct(jfield_t f);
+	void json_Destruct(json_t m);
+#else
+	#error "Missing Header Files"
 #endif
 
 char *ReadFileContent(const char *filepath);

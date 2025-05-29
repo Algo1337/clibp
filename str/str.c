@@ -134,6 +134,7 @@ int str_Strip(str_T *s) {
     for(int i = 0; i < new_len; i++)
         data[i] = s->data[start + i];
 
+	data[new_len] = '\0';
     free(s->data);
     s->data = data;
     s->idx = new_len;
