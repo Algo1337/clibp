@@ -1,12 +1,31 @@
-#define STRING_CLIBP
-#define ARRAY_CLIBP
-#define JSON_CLIBP
+#define CLIBP
 #include "../clibp.h"
 
 json_t new_json(void) {
 	json_t json = new_map();
 
 	return json;
+}
+
+int json_Contains(json_t j, str_t path, str_t key) {
+	if(!j || !key)
+		return -1;
+
+	for(int i = 0; i < j->fields->idx; i++) {
+		jfield_t field = j->fields->arr[i];
+
+		if(path != NULL) {
+			if(!strcmp(field->path->data, path->data) && !strcmp(field->key->data, key->data))
+				return i;
+			
+			continue;
+		}
+		
+		if(!strcmp(field->key->data, key->data))
+			return i;
+	}
+
+	return -1;
 }
 
 int json_Append(json_t j, str_t path, str_t key, element e, json_types type) {
@@ -65,10 +84,17 @@ json_t DecodeJSON(const str_T *rjson) {
 			str_Trim(key, '"');
 		}
 
-		if((value->data[0] == '"' || value->data[1] == '"') && (value->data[value->idx - 1] == '"' || value->data[value->idx - 2] == '"')) {
+		if((value->data[0] == '"')) {
 			ctype = J_STRING;
 			str_TrimAt(value, 0);
+		} else if(value->data[1] == '"') {
+			str_TrimAt(value, 1);
+		}
+		
+		if(value->data[value->idx - 1] == '"') {
 			str_TrimAt(value, value->idx - 1);
+		} else if(value->data[value->idx - 2] == '"') {
+			str_TrimAt(value, value->idx - 2);
 		}
 
 		if(str_StartsWith(args->arr[1], "[")) {

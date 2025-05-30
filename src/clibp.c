@@ -1,7 +1,4 @@
-#define STRING_CLIBP
-#define ARRAY_CLIBP
-#define MAP_CLIBP
-#define JSON_CLIBP
+#define CLIBP
 #include "clibp.h"
 
 /* Temporary Function */
