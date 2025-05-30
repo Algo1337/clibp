@@ -47,6 +47,29 @@ int arr_Append(arr_T *a, element q) {
     return 1;
 }
 
+int arr_Insert(arr_T *a, int pos, element q) {
+    if(!a || !q)
+        return -1;
+
+    a->idx++;
+    void **arr = (void **)malloc(sizeof(element) * a->idx);
+    int idx = 0;
+
+    for(int i = 0; i < a->idx; i++) {
+        if(i == pos) {
+            arr[idx] = q;
+            continue;
+        }
+
+        arr[idx] = a->arr[i];
+    }
+
+    free(a->arr);
+    a->arr = arr;
+    
+    return 1;
+}
+
 int arr_Remove(arr_T *a, int pos, void *destructor) {
 	if(!a || pos < 0)
 		return 0;
@@ -85,6 +108,22 @@ int arr_Merge(arr_T *a, arr r) {
 	}
 
 	return added;
+}
+
+int arr_Reverse(arr_T *a) {
+    if(!a)
+        return 0;
+
+    void **arr = (void **)malloc(sizeof(element) * a->idx);
+    int idx = 0;
+
+    for(int i = a->idx; a->idx > i; i++)
+        arr[idx] = a->arr[i];
+
+    free(a->arr);
+
+    a->arr = arr;
+    return 1;
 }
 
 void arr_Destruct(arr_T *a, void *destructor) {

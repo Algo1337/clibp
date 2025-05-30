@@ -404,7 +404,14 @@ str str_GetSub(str_T *s, int start, int end) {
 }
 
 int str_ReplaceString(str_T *s, const str find, const str replace) {
+    if(!s || !find || !replace)
+        return 0;
 
+    int pos = 0, match = 0;
+    while((pos = str_FindString(s, find, match)) != -1) {
+        
+        match++;
+    }
 }
 
 int str_Join(str_T *s, arr r) {

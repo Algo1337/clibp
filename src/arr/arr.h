@@ -33,6 +33,10 @@ int arr_Contains(arr_T *a, element q);
 */
 int arr_Append(arr_T *a, element q);
 
+/*
+	@[DOC]
+		Remove an element idx from array with a destructor for the element
+*/
 int arr_Remove(arr_T *a, int pos, void *destructor);
 
 /*
@@ -40,6 +44,18 @@ int arr_Remove(arr_T *a, int pos, void *destructor);
 		Merge a new array into the main array
 */
 int arr_Merge(arr_T *a, arr r);
+
+/*
+	@[DOC]
+		Insert an element into the array at a position
+*/
+int arr_Insert(arr_T *a, int pos, element q);
+
+/*
+	@[DOC]
+		Reverse an array
+*/
+int arr_Reverse(arr_T *a);
 
 /*
 	@[DOC]
