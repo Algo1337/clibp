@@ -30,6 +30,7 @@
 	str_t arr_Join(arr_t a, str delim);
 	arr_t str_SplitAt(str_t s, const character ch);
 #else
+	// #warning "Missing arr header file"
 	#warning "Missing arr header file"
 #endif
 

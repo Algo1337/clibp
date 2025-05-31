@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "str.h"
 
@@ -43,6 +44,19 @@ size_t str_Len(str_T *s) {
     return s->idx;
 }
 
+int str_AppendMany(str_T *s, str_T **n) {
+    if(!s || !n)
+        return -1;
+
+    int success = 0;
+    for(int i = 0; n[i] != NULL; i++) {
+        if(str_Append(s, n[i]))
+            success++;
+    }
+
+    return success;
+}
+
 int str_Append(str_T *s, str_T *n) {
 	if(!s || !n)
 		return 0;
@@ -52,6 +66,17 @@ int str_Append(str_T *s, str_T *n) {
 
 	strncat(s->data, n->data, n->idx);
 	return 1;
+}
+
+int str_iAppend(str_T *s, int num) {
+    if(!s)
+        return 0;
+
+    char b[200] = {0};
+    sprintf(b, "%d", num);
+    str_Append(s, new_str(b, 1));
+
+    return 1;
 }
 
 int str_Remove(str_T *s, int start, int end) {
@@ -298,6 +323,32 @@ int str_ReplaceChar(str_T *s, const character find, const character replace) {
     return 1;
 }
 
+int str_CountString(str_T *s, const str find) {
+    if(!s || !s->data || s->idx < 2)
+        return -1;
+
+    int len = strlen(find);
+    if(len > s->idx)
+        return -1;
+        
+    int count = 0;
+    for(int i = 0; i < s->idx; i++)
+    {
+        if(i + len - 1 >= s->idx)
+            break;
+
+        if(s->data[i] == find[0] && s->data[i + len - 1] == find[len - 1]) {
+            for(int c = 0; c < len; c++) {
+                if(s->data[i + c] == find[c] && c == len -1) {
+                    count++;
+                }
+            }
+        }
+    }
+
+    return count;
+}
+
 int str_FindString(str_T *s, const str find, int match_count) {
     if(!s || !s->data || s->idx < 2)
         return -1;
@@ -383,6 +434,38 @@ int str_IsUppercase(str_T *s) {
     return 1;
 }
 
+int str_ToLowercase(str_T *s) {
+    if(!s)
+        return 0;
+
+    char *data = (char *)malloc(s->idx);
+    for(int i = 0; i < s->idx; i++) {
+        if(!islower(s->data[i]))
+            data[i] = (char)tolower(s->data[i]);
+    }
+
+    free(s->data);
+    s->data = data;
+
+    return 1;
+}
+
+int str_ToUppercase(str_T *s) {
+    if(!s)
+        return 0;
+
+    char *data = (char *)malloc(s->idx);
+    for(int i = 0; i < s->idx; i++) {
+        if(!isupper(s->data[i]))
+            data[i] = (char)toupper(s->data[i]);
+    }
+
+    free(s->data);
+    s->data = data;
+
+    return 1;
+}
+
 str str_GetSub(str_T *s, int start, int end) {
     if(!s || !s->data || s->idx < 2)
         return NULL;
@@ -409,7 +492,7 @@ int str_ReplaceString(str_T *s, const str find, const str replace) {
 
     int pos = 0, match = 0;
     while((pos = str_FindString(s, find, match)) != -1) {
-        
+
         match++;
     }
 }

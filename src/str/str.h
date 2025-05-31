@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../arr/arr.h"
+#include "chr.h"
 
 typedef char *str;
 typedef char character;
@@ -25,6 +25,7 @@ str_T   *str_Set(str_T *s);
 str     str_Get(str_T *s);
 size_t  str_Len(str_T *s);
 int		str_Append(str_T *s, str_T *n);
+int     str_iAppend(str_T *s, int num);
 int		str_Remove(str_T *s, int start, int end);
 int     str_IsASCII(str_T *s);
 int     str_Is(str_T *s, const str q);
@@ -37,10 +38,13 @@ int     str_FindChar(str_T *s, const character ch, int match_count);
 int     str_Trim(str_T *s, const character ch);
 int     str_TrimAt(str_T *s, int pos);
 int     str_ReplaceChar(str_T *s, const character find, const character replace);
+int     str_CountString(str_T *s, const str find);
 int     str_FindString(str_T *s, const str find, int match_count);
 int     str_StartsWith(str_T *s, const str q);
 int     str_EndsWith(str_T *s, const str q);
 int     str_IsLowercase(str_T *s);
 int     str_IsUppercase(str_T *s);
+int     str_ToLowercase(str_T *s);
+int     str_ToUppercase(str_T *s);
 str     str_GetSub(str_T *s, int start, int end);
 void	str_Destruct(str_T *s);
