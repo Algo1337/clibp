@@ -497,9 +497,9 @@ int str_ReplaceString(str_T *s, const str find, const str replace) {
     }
 }
 
-int str_Join(str_T *s, arr r) {
+// int str_Join(str_T *s, arr r) {
 
-}
+// }
 
 void str_Destruct(str_T *s) {
 	if(!s)
