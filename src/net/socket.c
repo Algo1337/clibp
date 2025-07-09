@@ -90,11 +90,15 @@ str_t *sock_read(sock_t *s) {
         return (str_t){0};
 
     char *buff = (char *)malloc(s->buffer_len);
+    if(!buff)
+        return (str_t){0}
     memset(buff, '\0', s->buffer_len);
 
     int bytes = read(s->sock, buff, s->buffer_len);
-    if(bytes <= 0)
+    if(bytes <= 0) {
+        free(buff);
         return (str_t){0};
+    }
 
     return new_str(buff, 0);
 }
