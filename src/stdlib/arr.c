@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "arr.h"
+#include "../../headers/arr.h"
 
 arr_T *new_arr(const arr arr, int stack) {
     arr_T *a = (arr_T *)malloc(sizeof(arr_T));

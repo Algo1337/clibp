@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "map.h"
+#include "../../headers/map.h"
 
 map_T *new_map(void) {
     map_T *m = (map_T *)malloc(sizeof(map_T));

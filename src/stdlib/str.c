@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-
-#include "str.h"
+#include "../../headers/str.h"
 
 str_T *new_str(const str data, int stack) {
     str_T *s = (str_T *)malloc(sizeof(str_T));

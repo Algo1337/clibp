@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../str/str.h"
-#include "../arr/arr.h"
+#include "str.h"
+#include "arr.h"
 
 typedef enum JSON_TYPE {
 	J_STRING = 0x03543,

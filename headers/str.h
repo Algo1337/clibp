@@ -1,6 +1,9 @@
 #pragma once
 
-#include "chr.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 typedef char *str;
 typedef char character;

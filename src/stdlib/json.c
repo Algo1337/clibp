@@ -1,5 +1,5 @@
 #define CLIBP
-#include "../clibp.h"
+#include "../../headers/clibp.h"
 
 json_t new_json(void) {
 	json_t json = new_map();

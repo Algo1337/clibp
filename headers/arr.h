@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../str/str.h"
+#include "str.h"
 
 typedef void *element;
 typedef char *str;

@@ -1,5 +1,5 @@
 #define CLIBP
-#include "clibp.h"
+#include "../headers/clibp.h"
 
 /* Temporary Function */
 char *ReadFileContent(const char *filepath) {
