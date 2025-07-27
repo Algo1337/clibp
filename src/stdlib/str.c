@@ -56,10 +56,14 @@ int str_Append(str_T *s, str_T *n) {
 	if(!s || !n)
 		return 0;
 
-	s->idx += n->idx;
-	s->data = (char *)realloc(s->data, s->idx);
+    if(n->idx < 1)
+        return 0;
 
+	s->idx += n->idx;
+	s->data = (char *)realloc(s->data, s->idx + 1);
 	strncat(s->data, n->data, n->idx);
+    s->data[s->idx - 1] = '\0';
+    
 	return 1;
 }
 

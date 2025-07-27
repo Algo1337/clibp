@@ -27,6 +27,7 @@ str_T   *new_str(const str data, int stack);
 str_T   *str_Set(str_T *s);
 str     str_Get(str_T *s);
 size_t  str_Len(str_T *s);
+int     str_AppendMany(str_T *s, str_T **n);
 int		str_Append(str_T *s, str_T *n);
 int     str_iAppend(str_T *s, int num);
 int		str_Remove(str_T *s, int start, int end);

@@ -40,9 +40,13 @@ int arr_Append(arr_T *a, element q) {
     if(!a || !q)
         return 0;
 
+    if(a->lock)
+        return 0;
+
     a->arr[a->idx] = q;
     a->idx++;
     a->arr = (arr)realloc(a->arr, sizeof(element) * (a->idx + 1));
+    a->arr[a->idx] = NULL;
 
     return 1;
 }
