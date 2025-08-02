@@ -23,6 +23,12 @@ arr_T *new_arr(const arr arr, int stack);
 
 /*
 	@[DOC]
+		Lock the array
+*/
+int arr_Lock(arr_T *a);
+
+/*
+	@[DOC]
 		Check if the array contains a element
 */
 int arr_Contains(arr_T *a, element q);

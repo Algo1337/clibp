@@ -9,7 +9,7 @@ typedef struct thread_T {
     int         tid;
 
     void        *handler;
-    void        *args;
+    void        **args;
     void        *return_var;
     pthread_t   id;
 
@@ -23,10 +23,10 @@ typedef struct thread_T {
 typedef thread_T *thread_t;
 
 // Create thread Instanse and execute thread
-thread_t create_n_execute_thread(void *handler, void *args, int base_arg);
+thread_t create_n_execute_thread(void *handler, void **args, int base_arg);
 
 // Create a thread_t Instanse
-thread_t create_thread(void *handler, void *args, int base_arg);
+thread_t create_thread(void *handler, void **args, int base_arg);
 
 // Execute thread
 int thread_execute(thread_t t);

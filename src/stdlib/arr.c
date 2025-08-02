@@ -18,10 +18,19 @@ arr_T *new_arr(const arr arr, int stack) {
     else
         a->location.heap = 1;
 
+    a->lock = 0;
 	if(arr)
 	    for(a->idx = 0; arr[a->idx] != NULL; a->idx++);
 
     return a;
+}
+
+int arr_Lock(arr_T *a) {
+    if(!a)
+        return 0;
+
+    (void)(a->lock ? 0 : 1);
+    return a->lock;
 }
 
 int arr_Contains(arr_T *a, element q) {

@@ -6,7 +6,8 @@
 
 #include <thread.h>
 
-void test_fn() {
+void test_fn(thread_t t) {
+	printf("%d\n", *(int *)t->args[0]);
 	for(int i = 0; i < 30; i++) {
 		printf("Hi %d\n", i);
 		sleep(1);
@@ -14,7 +15,8 @@ void test_fn() {
 }
 
 int main() {
-	thread_t thread = create_n_execute_thread(test_fn, NULL, 0);
+	int g = 1;
+	thread_t thread = create_n_execute_thread(test_fn, (void *[]){(void *)&g, NULL}, 1);
 
 	thread_wait(thread);
 	return 0;

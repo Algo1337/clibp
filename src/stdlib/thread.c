@@ -1,13 +1,13 @@
 #include "../../headers/thread.h"
 
-thread_t create_n_execute_thread(void *handler, void *args, int base_arg) {
+thread_t create_n_execute_thread(void *handler, void **args, int base_arg) {
     thread_t t = create_thread(handler, args, base_arg);
 
     thread_execute(t);
     return t;
 }
 
-thread_t create_thread(void *handler, void *args, int base_arg) {
+thread_t create_thread(void *handler, void **args, int base_arg) {
     thread_t t = (thread_t)malloc(sizeof(thread_T));
     memset(t, '\0', sizeof(thread_T));
 
@@ -19,7 +19,7 @@ thread_t create_thread(void *handler, void *args, int base_arg) {
 }
 
 int thread_execute(thread_t t) {
-    if(!t || !t->handler)
+    if(!t)
         return 0;
 
     t->running = 1;

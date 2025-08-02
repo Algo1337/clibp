@@ -8,6 +8,7 @@
 
 void test_fn(thread_t t)  {
 	for(int i = 0; i < 10; i++) {
+		printf("%d\n", *(int *)t->args[0]);
 		usleep(5000);
 	}
 
@@ -21,8 +22,10 @@ int main() {
 		return 1;
 	}
 
+	int *gay = (int *)malloc(sizeof(int));
+	gay[0] = 1;
 	for(int i = 0; i < 80; i++)
-		if(tp_Append(pool, create_thread(test_fn, NULL, 1)) < 0)
+		if(tp_Append(pool, create_thread(test_fn, (void **){(void *)gay}, 1)) < 0)
 			printf("[ - ] Error, Unable to add thread @ %d!\n", i);
 
 	if(pool->threads->idx == 0) {
@@ -37,5 +40,6 @@ int main() {
 		ticks++;
 		usleep(30000);
 	}
+	
 	return 0;
 }
