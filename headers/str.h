@@ -51,4 +51,5 @@ int     str_IsUppercase(str_T *s);
 int     str_ToLowercase(str_T *s);
 int     str_ToUppercase(str_T *s);
 str     str_GetSub(str_T *s, int start, int end);
+str_T	*str_Copy(str_T *s);
 void	str_Destruct(str_T *s);

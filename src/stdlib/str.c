@@ -496,6 +496,18 @@ int str_ReplaceString(str_T *s, const str find, const str replace) {
     }
 }
 
+str_T *str_Copy(str_T *s) {
+	if(!s)
+		return NULL;
+
+	str_T *nstr = (str_T *)malloc(sizeof(str_T));
+
+	nstr->data = strdup(s->data);
+	nstr->idx = s->idx;
+
+	return nstr;
+}
+
 // int str_Join(str_T *s, arr r) {
 
 // }
