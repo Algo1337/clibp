@@ -67,6 +67,25 @@ int str_Append(str_T *s, str_T *n) {
 	return 1;
 }
 
+
+
+int str_cAppend(str_T *s, char *n) {
+	if(!s || !n)
+		return 0;
+
+    size_t len = strlen(n);
+    if(n == 0) {
+        return 0;
+    }
+
+	s->idx += len;
+	s->data = (char *)realloc(s->data, s->idx + 1);
+	strncat(s->data, n, len);
+    s->data[s->idx - 1] = '\0';
+    
+	return 1;
+}
+
 int str_iAppend(str_T *s, int num) {
     if(!s)
         return 0;

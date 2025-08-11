@@ -1,5 +1,9 @@
 #pragma once
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 typedef struct Mem {
 	void 	*ptr;
 	size_t 	sz;

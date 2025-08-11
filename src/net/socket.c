@@ -19,7 +19,7 @@ sock_T *create_socket(hostname_t ip_t, str_t ipaddr, int_T prt) {
     s->addr.sin_family = AF_INET;
     s->addr.sin_port = htons(prt);
 
-    if(ip_t = _ipv4 && strlen(s->ip->data) > 2)
+    if(ip_t == _ipv4 && strlen(s->ip->data) > 2)
         if(!inet_aton(s->ip->data, &s->addr.sin_addr))
             return NULL;
 

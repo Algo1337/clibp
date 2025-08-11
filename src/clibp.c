@@ -77,3 +77,15 @@ arr_t str_SplitAt(str_t s, const character ch) {
     arr_Destruct(list, str_Destruct);
     return list;
 }
+
+//
+//
+//  [ Mem Function ]
+//
+//
+
+void free_many(void **args) {
+    int i = 0;
+    while(args[i] != NULL)
+        free(args[i++]);
+}

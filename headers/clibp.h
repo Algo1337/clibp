@@ -71,3 +71,5 @@
 typedef void *void_t;
 
 char *ReadFileContent(const char *filepath);
+
+void free_many(void **args);
