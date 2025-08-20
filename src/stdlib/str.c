@@ -1,5 +1,44 @@
 #include "../../headers/str.h"
 
+// sz not needed if data 
+str_T *allocate_srt(const str data, int sz) {
+    str_T *s = (str_T *)malloc(sizeof(str_T));
+
+    if(data != NULL && sz == 0) {
+        /* 
+            [ String w/ size ]
+
+            Allocate Size then set string
+        */
+        s->data = strdup(data);
+
+        s->idx = strlen(data);
+        s->allocated = s->idx;
+    } else if(data != NULL && sz > 0) {
+        /* 
+            [ String w/ size ]
+
+            Allocate Size then set string
+        */
+        s->data = (char *)malloc(sz);
+        strncat(s->data, data, strlen(data));
+
+        s->idx = strlen(data);
+        s->allocated = s->idx;
+    } else if(!data && sz > 0) {
+        /* 
+            [ No String w/ size ]
+
+            Allocate Size
+        */
+        s->data = (char *)malloc(sz);
+        s->idx = 0;
+        s->allocated = sz;
+    }
+
+    return s;
+}
+
 str_T *new_str(const str data, int stack) {
     str_T *s = (str_T *)malloc(sizeof(str_T));
 
@@ -11,6 +50,7 @@ str_T *new_str(const str data, int stack) {
         s->location.heap = 1;
 
     s->idx = (!data ? 0 : strlen(data));
+    s->allocated = s->idx;
 
     return s;
 }
@@ -27,6 +67,7 @@ str_T *str_Set(str_T *s) {
 
     s->data = (char *)malloc(1);
     s->idx = 1;
+    s->allocated = 1;
 
     return s;
 }
@@ -37,6 +78,10 @@ str str_Get(str_T *s) {
 
 size_t str_Len(str_T *s) {
     return s->idx;
+}
+
+size_t str_AllocatedSize(str_T *s) {
+    return s->allocated;
 }
 
 int str_AppendMany(str_T *s, str_T **n) {
@@ -60,14 +105,16 @@ int str_Append(str_T *s, str_T *n) {
         return 0;
 
 	s->idx += n->idx;
-	s->data = (char *)realloc(s->data, s->idx + 1);
+    if(s->idx > s->allocated) {
+        s->allocated += n->idx;
+        s->data = (char *)realloc(s->data, s->idx + 1);
+    }
+
 	strncat(s->data, n->data, n->idx);
-    s->data[s->idx - 1] = '\0';
+    s->data[s->idx] = '\0';
     
 	return 1;
 }
-
-
 
 int str_cAppend(str_T *s, char *n) {
 	if(!s || !n)
@@ -79,9 +126,13 @@ int str_cAppend(str_T *s, char *n) {
     }
 
 	s->idx += len;
-	s->data = (char *)realloc(s->data, s->idx + 1);
+    if(s->idx > s->allocated) {
+        s->allocated += len;
+	    s->data = (char *)realloc(s->data, s->idx + 1);
+    }
+
 	strncat(s->data, n, len);
-    s->data[s->idx - 1] = '\0';
+    s->data[s->idx] = '\0';
     
 	return 1;
 }
@@ -117,6 +168,7 @@ int str_Remove(str_T *s, int start, int end) {
 	free(s->data);
 	s->data = nstr;
 	s->idx = idx;
+    s->allocated = s->idx;
 
 	return 1;
 }
@@ -181,6 +233,7 @@ int str_Strip(str_T *s) {
     free(s->data);
     s->data = data;
     s->idx = new_len;
+    s->allocated = s->idx;
 
     return new_len;
 }
@@ -210,6 +263,7 @@ int str_Insert(str_T *s, int pos, const character ch) {
 
     s->data = data;
     s->idx = idx;
+    s->allocated = s->idx;
     return 1;
 }
 
@@ -276,6 +330,7 @@ int str_Trim(str_T *s, const character ch) {
 
     s->data = data;
     s->idx = idx;
+    s->allocated = s->idx;
 
     return idx;
 }
@@ -306,6 +361,7 @@ int str_TrimAt(str_T *s, int pos) {
 
     s->data = data;
     s->idx = idx;
+    s->allocated = s->idx;
 
     return idx;
 }
@@ -337,6 +393,7 @@ int str_ReplaceChar(str_T *s, const character find, const character replace) {
 
     s->data = data;
     s->idx = idx;
+    s->allocated = s->idx;
 
     return 1;
 }
@@ -458,8 +515,7 @@ int str_ToLowercase(str_T *s) {
 
     char *data = (char *)malloc(s->idx);
     for(int i = 0; i < s->idx; i++) {
-        if(!islower(s->data[i]))
-            data[i] = (char)tolower(s->data[i]);
+        data[i] = (char)tolower(s->data[i]);
     }
 
     free(s->data);
@@ -474,8 +530,7 @@ int str_ToUppercase(str_T *s) {
 
     char *data = (char *)malloc(s->idx);
     for(int i = 0; i < s->idx; i++) {
-        if(!isupper(s->data[i]))
-            data[i] = (char)toupper(s->data[i]);
+        data[i] = (char)toupper(s->data[i]);
     }
 
     free(s->data);
@@ -523,6 +578,7 @@ str_T *str_Copy(str_T *s) {
 
 	nstr->data = strdup(s->data);
 	nstr->idx = s->idx;
+    s->allocated = s->idx;
 
 	return nstr;
 }

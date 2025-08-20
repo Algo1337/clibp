@@ -15,7 +15,7 @@ compile_socket:
 	${DEBUG_FLAGS}
 
 compile_lib:
-	gcc -c src/*.c \
+	gcc -c -fPIC -no-pie src/*.c \
 	src/stdlib/*.c \
 	src/net/*.c \
 	-Wl,-z,noexecstack \

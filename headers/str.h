@@ -17,12 +17,14 @@ typedef enum str_Utils {
 typedef struct str_T {
     str     data;
     int     idx;
+    size_t  allocated;
     int     lock;
     struct {
         int stack, heap;
     } location;
 } str_T;
 
+str_T   *allocate_srt(const str data, int sz);
 str_T   *new_str(const str data, int stack);
 str_T   *str_Set(str_T *s);
 str     str_Get(str_T *s);
