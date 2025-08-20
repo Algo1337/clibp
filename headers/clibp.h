@@ -8,6 +8,9 @@
 #include "arr.h"
 #include "map.h"
 
+#include "file.h"
+
+
 #if defined(CLIBP)
 	#define INT_CLIBP	
 	#define STRING_CLIBP
