@@ -108,7 +108,7 @@ int sock_write(sock_T *s, const str data) {
     if(!s || s->sock <= 0)
         return 0;
 
-    int bytes_sent = send(s->sock, data, strlen(data) - 1, MSG_NOSIGNAL);
+    int bytes_sent = send(s->sock, data, strlen(data), MSG_NOSIGNAL);
     if(bytes_sent <= 0)
         return 0;
 
