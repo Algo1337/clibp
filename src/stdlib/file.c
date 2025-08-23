@@ -3,85 +3,61 @@
 #define ARRAY_CLIBP
 #include "../../headers/clibp.h"
 
-file_t create_file(str_T *name, size_t sz) {
-	Item *file = (Item *)malloc(sizeof(Item));
+File *open_file(const char *filename, const char *mode) {
+    if(!filename || !mode)
+        return NULL;
 
-	file->name = name;
-	file->size = sz;
-	file->is_file = 1;
+    File *f = (File *)malloc(sizeof(File));
+    f->filename = strdup(filename);
+    if(!(f->stream = fopen(filename, mode))) {
+        free(f);
+        return NULL;
+    }
 
-	return file;
+    return f;
 }
 
-void file_Destruct(file_t file) {
-	if(!file)
-		return;
+int file_Read(File *f) {
+    if(!f)
+        return 0;
 
-	if(file->name)
-		str_Destruct(file->name);
+    fseek(f->stream, 0L, SEEK_END);
+    f->idx = ftell(f->stream);
+    fseek(f->stream, 0L, SEEK_SET);
 
-	free(file);
+    f->content = (char *)malloc(f->idx);
+    memset(f->content, 0, f->idx);
+    size_t bytes_r = fread(f->content, 1, f->idx, f->stream);
+    if(bytes_r < 0)
+        return 0;
+
+    return bytes_r;
 }
 
-dir_t open_dir(str_T *name) {
-	Dir *d = (Dir *)malloc(sizeof(Dir));
+int file_Write(File *f, const char *data) {
+    if(!f)
+        return 0;
 
-	d->name = name;
-	d->items = new_arr(NULL, 0);
+    fwrite(data, 1, strlen(data), f->stream);
+    fflush(f->stream);
 
-	__get_dir_info__(d);
-	return d;
+    return 1;
 }
 
-dir_t create_dir(str_T *name) {
-	Dir *d = (Dir *)malloc(sizeof(Dir));
-
-	d->name = name;
-	d->items = NULL;
-
-	return d;
+int file_ReadBinary(File *f) {
+    if(!f)
+        return 0;
 }
 
-static void __get_dir_info__(dir_t d) {
-    struct dirent *de;
-    DIR *dr = opendir(d->name->data);
-    if(!dr)
+void file_Destruct(File *f) {
+    if(!f)
         return;
 
-    while((de = readdir(dr)) != NULL) {
-        struct stat st;
-        if(stat(de->d_name, &st) == -1)
-            continue;
+    if(f->stream)
+        fclose(f->stream);
 
-        if(S_ISDIR(st.st_mode)) {
-            arr_Append(d->items, create_dir(new_str(strdup(de->d_name), 0)));
-			continue;
-        }
+    if(f->content)
+        free(f->content);
 
-        arr_Append(d->items, create_file(new_str(strdup(de->d_name), 0), st.st_size));
-    }
-}
-
-void dir_Destruct(dir_t d) {
-	if(!d)
-		return;
-
-	if(d->name)
-		str_Destruct(d->name);
-
-	if(d->items) {
-		for(int i = 0; i < d->items->idx; i++) {
-			if(!d->items->arr[i])
-				break;
-
-			if(((file_t)d->items->arr[i])->is_file) {
-				file_Destruct((file_t)d->items->arr[i]);
-				continue;
-			}
-
-			dir_Destruct((dir_t)d->items->arr[i]);
-		}
-	}
-
-	free(d);
+    free(f);
 }

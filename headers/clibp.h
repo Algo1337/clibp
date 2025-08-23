@@ -8,6 +8,7 @@
 #include "arr.h"
 #include "map.h"
 
+#include "dir.h"
 #include "file.h"
 
 
