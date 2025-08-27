@@ -9,6 +9,7 @@ File *open_file(const char *filename, const char *mode) {
 
     File *f = (File *)malloc(sizeof(File));
     f->filename = strdup(filename);
+    f->content = NULL;
     if(!(f->stream = fopen(filename, mode))) {
         free(f);
         return NULL;
